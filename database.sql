@@ -1,9 +1,6 @@
--- ============================================
 -- БАЗА ДАННЫХ "ПРИЮТ ДЛЯ ЖИВОТНЫХ"
--- По курсовой работе (разделы 1.3, 1.5, 2.1)
--- ============================================
 
--- 1. Таблица ПОЛЬЗОВАТЕЛИ (все роли в одной таблице)
+-- 1. Таблица ПОЛЬЗОВАТЕЛИ 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     full_name TEXT NOT NULL,                    -- ФИО (п. 1.3)
@@ -23,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Таблица ЖИВОТНЫЕ (п. 1.3)
+-- 2. Таблица ЖИВОТНЫЕ 
 CREATE TABLE IF NOT EXISTS animals (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,                         -- Кличка (ОБЯЗАТЕЛЬНО п. 1.5)
@@ -45,7 +42,7 @@ CREATE TABLE IF NOT EXISTS animals (
     FOREIGN KEY (curator_id) REFERENCES users(id)
 );
 
--- 3. Таблица МЕДИЦИНСКАЯ КАРТА (п. 1.3)
+-- 3. Таблица МЕДИЦИНСКАЯ КАРТА 
 CREATE TABLE IF NOT EXISTS medical_cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     animal_id INTEGER UNIQUE NOT NULL,          -- Животное (связь п. 1.3)
@@ -60,7 +57,7 @@ CREATE TABLE IF NOT EXISTS medical_cards (
     FOREIGN KEY (vet_id) REFERENCES users(id)
 );
 
--- 4. Таблица ХОЗЯЕВА (п. 1.3)
+-- 4. Таблица ХОЗЯЕВА 
 CREATE TABLE IF NOT EXISTS owners (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     full_name TEXT NOT NULL,                    -- ФИО (п. 1.3)
@@ -69,7 +66,7 @@ CREATE TABLE IF NOT EXISTS owners (
     address TEXT                                -- Место проживания (п. 1.3)
 );
 
--- 5. Таблица ЗАЯВКИ НА УСЫНОВЛЕНИЕ (п. 2.2)
+-- 5. Таблица ЗАЯВКИ НА УСЫНОВЛЕНИЕ 
 CREATE TABLE IF NOT EXISTS adoption_requests (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     animal_id INTEGER NOT NULL,                 -- Животное
@@ -87,7 +84,7 @@ CREATE TABLE IF NOT EXISTS adoption_requests (
     FOREIGN KEY (curator_id) REFERENCES users(id)
 );
 
--- 6. Таблица ПОЖЕРТВОВАНИЯ (п. 1.3)
+-- 6. Таблица ПОЖЕРТВОВАНИЯ 
 CREATE TABLE IF NOT EXISTS donations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     volunteer_id INTEGER,                       -- Волонтер (п. 1.3)
@@ -99,40 +96,38 @@ CREATE TABLE IF NOT EXISTS donations (
     FOREIGN KEY (volunteer_id) REFERENCES users(id)
 );
 
--- ============================================
--- ТЕСТОВЫЕ ДАННЫЕ (для демонстрации)
--- ============================================
+-- ТЕСТОВЫЕ ДАННЫЕ 
 
--- Пользователи (п. 2.1 Роли)
+-- Пользователи 
 INSERT OR IGNORE INTO users (full_name, email, phone, role, education, experience) VALUES
 ('Администратор', 'admin@shelter.ru', '+7(999)000-00-00', 'admin', NULL, NULL),
 ('Куратор Иванова', 'curator@shelter.ru', '+7(999)111-11-11', 'curator', NULL, '5 лет'),
 ('Ветеринар Петров', 'vet@shelter.ru', '+7(999)222-22-22', 'vet', 'Ветеринарный университет', NULL),
 ('Волонтер Сидоров', 'volunteer@shelter.ru', '+7(999)333-33-33', 'volunteer', NULL, NULL);
 
--- Животные (п. 1.3, 1.5)
+-- Животные 
 INSERT OR IGNORE INTO animals (name, type, breed, gender, color, status, curator_id) VALUES
 ('Барсик', 'cat', 'Дворовая', 'male', 'Рыжий', 'available', 2),
 ('Рекс', 'dog', 'Овчарка', 'male', 'Черный', 'adopted', 2),
 ('Мурка', 'cat', 'Британская', 'female', 'Серый', 'treatment', 2);
 
--- Хозяева (п. 1.3)
+-- Хозяева 
 INSERT OR IGNORE INTO owners (full_name, phone, email, address) VALUES
 ('Смирнов Петр', '+7(999)444-44-44', 'smirnov@mail.ru', 'г. Москва, ул. Ленина 1'),
 ('Козлова Мария', '+7(999)555-55-55', 'kozlova@mail.ru', 'г. Москва, ул. Мира 5');
 
--- Заявки (п. 2.2, 2.3)
+-- Заявки 
 INSERT OR IGNORE INTO adoption_requests (animal_id, owner_id, curator_id, status) VALUES
 (2, 1, 2, 'approved'),   -- Рекс усыновлен
 (1, 2, NULL, 'pending'); -- Барсик на рассмотрении
 
--- Медицинские карты (п. 1.3)
+-- Медицинские карты 
 INSERT OR IGNORE INTO medical_cards (animal_id, vet_id, exam_date, is_sterilized, vaccination_date, diagnosis) VALUES
 (1, 3, '15-01-25', 1, '10-01-25', 'Здоров'),
 (2, 3, '10-01-25', 1, '05-01-25', 'Здоров'),
 (3, 3, '20-01-25', 0, NULL, 'Требует лечения');
 
--- Пожертвования (п. 1.3)
+-- Пожертвования 
 INSERT OR IGNORE INTO donations (volunteer_id, donor_name, type, amount, donation_date) VALUES
 (4, 'Волонтеров Олег', 'money', 5000, '20-01-25'),
 (4, 'Волонтеров Олег', 'food', 10, '21-01-25');
