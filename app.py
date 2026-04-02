@@ -25,7 +25,7 @@ def validate_date(date_str):
     return bool(re.match(pattern, date_str))
 
 def validate_animal_type(animal_type):
-    """Проверка справочника видов (п. 1.5)"""
+    """Проверка справочника видов """
     return animal_type in ['cat', 'dog']
 
 
@@ -57,7 +57,7 @@ def index():
 
 @app.route('/api/animals', methods=['GET'])
 def get_animals():
-    """Просмотр списка - доступно ВСЕМ (п. 2.2)"""
+    """Просмотр списка - доступно ВСЕМ """
     animals = Animal.query.all()
     return jsonify([{
         'id': a.id,
@@ -85,7 +85,7 @@ def get_animal(animal_id):
 @app.route('/api/animals', methods=['POST'])
 @check_role(['vet', 'admin'])
 def create_animal():
-    """Создание - только Ветеринар и Админ (п. 2.2)"""
+    """Создание - только Ветеринар и Админ """
     data = request.json
     
     # Валидация обязательных полей 
@@ -115,7 +115,7 @@ def create_animal():
 @app.route('/api/animals/<int:animal_id>', methods=['PUT'])
 @check_role(['vet', 'admin'])
 def update_animal(animal_id):
-    """Редактирование - только Ветеринар и Админ (п. 2.2)"""
+    """Редактирование - только Ветеринар и Админ """
     animal = Animal.query.get_or_404(animal_id)
     data = request.json
     
@@ -140,7 +140,7 @@ def delete_animal(animal_id):
 @app.route('/api/animals/<int:animal_id>/medical', methods=['GET'])
 @check_role(['owner', 'volunteer', 'curator', 'vet', 'admin'])
 def get_medical_card(animal_id):
-    """Просмотр мед.карты - всем кроме Гостя (п. 2.2)"""
+    """Просмотр мед.карты - всем кроме Гостя """
     medical_card = MedicalCard.query.filter_by(animal_id=animal_id).first()
     
     if not medical_card:
@@ -157,7 +157,7 @@ def get_medical_card(animal_id):
 @app.route('/api/animals/<int:animal_id>/medical', methods=['POST', 'PUT'])
 @check_role(['vet', 'admin'])
 def save_medical_card(animal_id):
-    """Создание/Обновление - только Ветеринар и Админ (п. 2.2)"""
+    """Создание/Обновление - только Ветеринар и Админ """
     data = request.json
     
     if data.get('exam_date') and not validate_date(data.get('exam_date')):
@@ -187,7 +187,7 @@ def save_medical_card(animal_id):
 @app.route('/api/adoptions', methods=['POST'])
 @check_role(['guest', 'owner', 'volunteer'])
 def create_adoption_request():
-    """Создание заявки - Гость, Хозяин, Волонтер (п. 2.2)"""
+    """Создание заявки - Гость, Хозяин, Волонтер """
     data = request.json
     
     if data.get('owner_phone') and not validate_phone(data.get('owner_phone')):
@@ -218,7 +218,7 @@ def get_adoption_requests():
 @app.route('/api/adoptions/<int:request_id>/decision', methods=['PUT'])
 @check_role(['curator'])
 def decide_adoption(request_id):
-    """Подтверждение заявки - только Куратор (п. 2.3 Критичная операция)"""
+    """Подтверждение заявки - только Куратор """
     adoption = AdoptionRequest.query.get_or_404(request_id)
     data = request.json
     
