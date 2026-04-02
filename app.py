@@ -12,9 +12,8 @@ app.json.ensure_ascii = False
 CORS(app)
 db.init_app(app)
 
-# ============================================
 # ВАЛИДАЦИЯ (п. 1.5 Требования к качеству данных)
-# ============================================
+
 def validate_phone(phone):
     """Проверка формата телефона +7(XXX)XXX-XX-XX"""
     pattern = r'^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$'
@@ -29,9 +28,9 @@ def validate_animal_type(animal_type):
     """Проверка справочника видов (п. 1.5)"""
     return animal_type in ['cat', 'dog']
 
-# ============================================
+
 # ПРОВЕРКА ПРАВ ДОСТУПА (п. 2.2 Матрица доступа)
-# ============================================
+
 def get_user_role():
     """Получение роли из заголовка запроса"""
     return request.headers.get('X-User-Role', 'guest')
@@ -48,17 +47,13 @@ def check_role(allowed_roles):
         return wrapper
     return decorator
 
-# ============================================
 # API МАРШРУТЫ
-# ============================================
 
 @app.route('/')
 def index():
     return jsonify({'message': 'API приюта для животных работает!', 'version': '1.0'})
 
-# ============================================
 # 🐕 ЖИВОТНЫЕ (п. 2.2 Матрица доступа)
-# ============================================
 
 @app.route('/api/animals', methods=['GET'])
 def get_animals():
@@ -140,9 +135,7 @@ def delete_animal(animal_id):
     db.session.commit()
     return jsonify({'message': 'Животное удалено из системы'}), 200
 
-# ============================================
-# 🏥 МЕДИЦИНСКАЯ КАРТА
-# ============================================
+ # МЕДИЦИНСКАЯ КАРТА
 
 @app.route('/api/animals/<int:animal_id>/medical', methods=['GET'])
 @check_role(['owner', 'volunteer', 'curator', 'vet', 'admin'])
@@ -189,9 +182,7 @@ def save_medical_card(animal_id):
     db.session.commit()
     return jsonify({'message': 'Медицинская карта сохранена'}), 201
 
-# ============================================
-# 📋 ЗАЯВКИ НА УСЫНОВЛЕНИЕ
-# ============================================
+# ЗАЯВКИ НА УСЫНОВЛЕНИЕ
 
 @app.route('/api/adoptions', methods=['POST'])
 @check_role(['guest', 'owner', 'volunteer'])
@@ -243,14 +234,11 @@ def decide_adoption(request_id):
     db.session.commit()
     return jsonify({'message': f'Заявка {data["decision"]}'})
 
-# ============================================
-# 👤 ПОЛЬЗОВАТЕЛИ
-# ============================================
+# ПОЛЬЗОВАТЕЛИ
 
 @app.route('/api/users/<int:user_id>/block', methods=['PATCH'])
 @check_role(['admin'])
 def block_user(user_id):
-    """Блокировка пользователя - только Админ (п. 2.3 Критичная операция)"""
     user = User.query.get_or_404(user_id)
     data = request.json
     
@@ -259,9 +247,7 @@ def block_user(user_id):
     
     return jsonify({'message': f'Пользователь {"заблокирован" if user.is_blocked else "разблокирован"}'})
 
-# ============================================
 # ЗАПУСК
-# ============================================
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
