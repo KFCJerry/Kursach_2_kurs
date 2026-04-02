@@ -12,7 +12,7 @@ app.json.ensure_ascii = False
 CORS(app)
 db.init_app(app)
 
-# ВАЛИДАЦИЯ (п. 1.5 Требования к качеству данных)
+# ВАЛИДАЦИЯ 
 
 def validate_phone(phone):
     """Проверка формата телефона +7(XXX)XXX-XX-XX"""
@@ -29,7 +29,7 @@ def validate_animal_type(animal_type):
     return animal_type in ['cat', 'dog']
 
 
-# ПРОВЕРКА ПРАВ ДОСТУПА (п. 2.2 Матрица доступа)
+# ПРОВЕРКА ПРАВ ДОСТУПА 
 
 def get_user_role():
     """Получение роли из заголовка запроса"""
@@ -53,7 +53,7 @@ def check_role(allowed_roles):
 def index():
     return jsonify({'message': 'API приюта для животных работает!', 'version': '1.0'})
 
-# 🐕 ЖИВОТНЫЕ (п. 2.2 Матрица доступа)
+#  ЖИВОТНЫЕ 
 
 @app.route('/api/animals', methods=['GET'])
 def get_animals():
@@ -88,7 +88,7 @@ def create_animal():
     """Создание - только Ветеринар и Админ (п. 2.2)"""
     data = request.json
     
-    # Валидация обязательных полей (п. 1.5, 4.3)
+    # Валидация обязательных полей 
     if not data.get('name'):
         return jsonify({'error': 'Укажите кличку животного'}), 400
     
